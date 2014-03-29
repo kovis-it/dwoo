@@ -326,14 +326,11 @@ class Core {
 		}
 
 		// auto-create template if required
-		if ($_tpl instanceof ITemplate) {
-			// valid, skip
-		}
-		elseif (is_string($this->templateDir . $_tpl) && file_exists($this->templateDir . $_tpl)) {
+		if (is_string($this->templateDir . $_tpl) && file_exists($this->templateDir . $_tpl)) {
 			$_tpl = new File($this->templateDir . $_tpl);
 		}
-		else {
-			throw new CoreException('Dwoo->get/Dwoo->output\'s first argument must be a \Dwoo\ITemplate (i.e. \Dwoo\Template\File) or a valid path to a template file', E_USER_NOTICE);
+		else if (!$_tpl instanceof ITemplate) {
+			throw new CoreException('Dwoo->get/Dwoo->output\'s first argument must be a \Dwoo\ITemplate (i.e. \Dwoo\Template\File) or a valid path to a template file. Got: ' . $_tpl, E_USER_NOTICE);
 		}
 
 		// Put debug mode value
