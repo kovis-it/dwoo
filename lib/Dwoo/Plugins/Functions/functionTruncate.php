@@ -20,7 +20,7 @@ use Dwoo\Plugin;
  * @license    http://dwoo.org/LICENSE GNU Lesser General Public License v3.0
  * @link       http://dwoo.org/
  * @version    2.0
- * @date       2014-02-24
+ * @date       2014-03-29
  * @package    Dwoo
  */
 class FunctionTruncate extends Plugin {
