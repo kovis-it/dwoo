@@ -1,12 +1,15 @@
 <?php
 namespace Dwoo\Plugins\Functions;
 
+use Dwoo\Compiler;
+use Dwoo\ICompilable;
 use Dwoo\Plugin;
 
 /**
- * Return execution time of the php program.
+ * Assigns a value to a variable
  * <pre>
- *  * $precision : The optional number of decimal digits to round to.
+ *  * value : the value that you want to save
+ *  * var : the variable name (without the leading $)
  * </pre>
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from the use of this software.
@@ -18,12 +21,9 @@ use Dwoo\Plugin;
  * @date       2014-02-24
  * @package    Dwoo
  */
-class FunctionExectime extends Plugin {
+class FunctionAssign extends Plugin implements ICompilable {
 
-	public function process($precision = 0) {
-		if (version_compare(PHP_VERSION, '5.4', '<')) {
-			return round(((float) array_sum(explode(' ',microtime())) - ((float) $_SERVER['REQUEST_TIME'])) * 10, $precision);
-		}
-		return round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000, $precision);
+	public static function compile(Compiler $compiler, $value, $var) {
+		return '$this->assignInScope(' . $value . ', ' . $var . ')';
 	}
 }

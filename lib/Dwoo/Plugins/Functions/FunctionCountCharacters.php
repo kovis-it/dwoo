@@ -6,9 +6,10 @@ use Dwoo\ICompilable;
 use Dwoo\Plugin;
 
 /**
- * Counts the paragraphs in a string
+ * Counts the characters in a string
  * <pre>
  *  * value : the string to process
+ *  * count_spaces : if true, the white-space characters are counted as well
  * </pre>
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from the use of this software.
@@ -21,10 +22,12 @@ use Dwoo\Plugin;
  * @date       2014-02-24
  * @package    Dwoo
  */
-class FunctionCountParagraphs extends Plugin implements ICompilable {
+class FunctionCountCharacters extends Plugin implements ICompilable {
 
-	public static function compile(Compiler $compiler, $value) {
-		// count \r or \n characters
-		return '(preg_match_all(\'([^\n]*\n+)\', ' . $value . ', $tmp)+1)';
+	public static function compile(Compiler $compiler, $value, $count_spaces = false) {
+		if ($count_spaces === false) {
+			return 'preg_match_all(\'#[^\s\pZ]#u\', ' . $value . ', $tmp)';
+		}
+		return 'mb_strlen(' . $value . ', $this->charset)';
 	}
 }
