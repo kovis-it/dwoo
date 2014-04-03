@@ -1,7 +1,7 @@
 <?php
 namespace Dwoo;
 
-use Dwoo\Block\Plugin;
+use Dwoo\Block\Plugin as BlockPlugin;
 use Dwoo\Exception\CoreException;
 use Dwoo\Plugins\Blocks\BlockDynamic;
 use Dwoo\Template\File;
@@ -1056,6 +1056,8 @@ class Core {
 	 * [runtime function] adds a block to the block stack
 	 * @param string $blockName the block name (without prefix)
 	 * @param array  $args      the arguments to be passed to the block's init() function
+	 * @throws \Exception
+	 * @throws \ReflectionException
 	 * @return Plugin the newly created block
 	 */
 	public function addStack($blockName, array $args = array()) {
@@ -1134,7 +1136,7 @@ class Core {
 	 * @param Block\Plugin $block
 	 * @return Block\Plugin or false if the given block isn't in the stack
 	 */
-	public function getParentBlock(Plugin $block) {
+	public function getParentBlock(BlockPlugin $block) {
 		$index = array_search($block, $this->stack, true);
 		if ($index !== false && $index > 0) {
 			return $this->stack[$index - 1];
