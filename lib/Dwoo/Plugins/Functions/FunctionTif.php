@@ -29,7 +29,7 @@ class FunctionTif extends Plugin implements ICompilable {
 
 	public static function compile(Compiler $compiler, array $rest, array $tokens) {
 		// load if plugin
-		if (!class_exists('\Dwoo\Plugins\Blocks\BlockIf')) {
+		if (!class_exists('\Dwoo\Plugins\Blocks\BlockIf', false)) {
 			try {
 				$compiler->getCore()->getLoader()->loadPlugin('if');
 			}

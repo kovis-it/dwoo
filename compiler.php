@@ -34,6 +34,9 @@ EOF;
 
 	$phar->setStub($stub);
 	$phar->stopBuffering();
+
+	echo 'Compiled successfully in '.(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']).'ms !' . "<br>";
+	echo 'File size: ' . filesize('dwoo.phar') . ' bytes';
 }
 catch (UnexpectedValueException $e) {
 	echo $e->getMessage();

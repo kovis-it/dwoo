@@ -326,10 +326,13 @@ class Core {
 		}
 
 		// auto-create template if required
-		if (is_string($this->templateDir . $_tpl) && file_exists($this->templateDir . $_tpl)) {
+		if ($_tpl instanceof ITemplate) {
+			// valid, skip
+		}
+		elseif (is_string($this->templateDir . $_tpl) && file_exists($this->templateDir . $_tpl)) {
 			$_tpl = new File($this->templateDir . $_tpl);
 		}
-		else if (!$_tpl instanceof ITemplate) {
+		else {
 			throw new CoreException('Dwoo->get/Dwoo->output\'s first argument must be a \Dwoo\ITemplate (i.e. \Dwoo\Template\File) or a valid path to a template file. Got: ' . $_tpl, E_USER_NOTICE);
 		}
 
