@@ -24,8 +24,8 @@ use Dwoo\Security\Exception as SecurityException;
  * @license    http://dwoo.org/LICENSE GNU Lesser General Public License v3.0
  * @link       http://dwoo.org/
  * @version    2.0
- * @date       2014-02-24
- * @package    Dwoo
+ * @date       2014-05-27
+ * @package    Dwoo\Plugins\Functions
  */
 class FunctionInclude extends Plugin {
 
@@ -77,11 +77,18 @@ class FunctionInclude extends Plugin {
 		$clone = clone $this->core;
 		$out   = $clone->get($include, $vars);
 
+		// Assign in scope variable from $assign
 		if ($assign !== null) {
 			$this->core->assignInScope($out, $assign);
 		}
 
+		// Assign in scope returned value set by the template
 		foreach ($clone->getReturnValues() as $name => $value) {
+			$this->core->assignInScope($value, $name);
+		}
+
+		// Assign in scope the scope from the cloned object
+		foreach ($clone->getScope() as $name => $value) {
 			$this->core->assignInScope($value, $name);
 		}
 
