@@ -6,28 +6,19 @@ require 'IAutoloader.php';
 /**
  * SplClassLoader implementation that implements the technical interoperability
  * standards for PHP 5.3 namespaces and class names.
- *
  * https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
- *
  * Example usage:
- *
  *     $autoloader = new \Dwoo\Autoloader();
- *
  *     // Configure the SplClassLoader to act normally or silently
  *     $autoloader->setMode(\SplClassLoader::MODE_NORMAL);
- *
  *     // Add a prefix
  *     $autoloader->add('Dwoo', '/path/to/dwoo');
- *
  *     // Allow to PHP use the include_path for file path lookup
  *     $autoloader->setIncludePathLookup(true);
- *
  *     // Possibility to change the default php file extension
  *     $autoloader->setFileExtension('.php');
- *
  *     // Register the autoloader, prepending it in the stack
  *     $autoloader->register(true);
- *
  * @author     Guilherme Blanco <guilhermeblanco@php.net>
  * @author     Jonathan H. Wage <jonwage@gmail.com>
  * @author     Roman S. Borschel <roman@code-factory.org>
@@ -39,7 +30,7 @@ require 'IAutoloader.php';
  * @license    http://dwoo.org/LICENSE GNU Lesser General Public License v3.0
  * @link       http://dwoo.org/
  * @version    2.0
- * @date       2014-02-16
+ * @date       2014-05-27
  * @package    Dwoo
  */
 class Autoloader implements IAutoloader {
@@ -121,18 +112,20 @@ class Autoloader implements IAutoloader {
 	 * @param bool $prepend Whether to prepend the autoloader or not in autoloader's list.
 	 */
 	public function register($prepend = false) {
-		spl_autoload_register([$this,
-							  'load'
-							  ], true, $prepend);
+		spl_autoload_register(array(
+			$this,
+			'load'
+		), true, $prepend);
 	}
 
 	/**
 	 * Unregister this autoloader instance.
 	 */
 	public function unregister() {
-		spl_autoload_unregister([$this,
-								'load'
-								]);
+		spl_autoload_unregister(array(
+			$this,
+			'load'
+		));
 	}
 
 	/**
@@ -165,7 +158,7 @@ class Autoloader implements IAutoloader {
 		// Require class
 		require $resourceAbsolutePath;
 
-		if ($this->mode & self::MODE_DEBUG && !$this->_isResourceDeclared($resourceName)) {
+		if ($this->mode & self::MODE_DEBUG && ! $this->_isResourceDeclared($resourceName)) {
 			throw new \RuntimeException(sprintf('Autoloader expected resource "%s" to be declared in file "%s".', $resourceName, $resourceAbsolutePath));
 		}
 	}
@@ -185,7 +178,7 @@ class Autoloader implements IAutoloader {
 
 			foreach ($resourcesPath as $resourcePath) {
 				if (\Phar::running() !== '') {
-					$resourceAbsolutePath = \Phar::running().substr($resourceRelativePath, strlen($resource));
+					$resourceAbsolutePath = \Phar::running() . substr($resourceRelativePath, strlen($resource));
 				}
 				else {
 					$resourceAbsolutePath = $resourcePath . DIRECTORY_SEPARATOR . substr($resourceRelativePath, strlen($resource));
@@ -197,7 +190,6 @@ class Autoloader implements IAutoloader {
 				}
 			}
 		}
-
 
 		if ($this->includePathLookup && ($resourceAbsolutePath = stream_resolve_include_path($resourceRelativePath)) !== false) {
 			return $resourceAbsolutePath;
