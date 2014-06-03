@@ -344,6 +344,8 @@ class Adapter extends Core {
 		else {
 			trigger_error('Compiler: object "' . $name . '" was not registered or is not an object', E_USER_ERROR);
 		}
+
+        return null;
 	}
 
 	public function template_exists($filename) {
@@ -442,5 +444,7 @@ class Adapter extends Core {
 			return parent::triggerError($message, $level);
 		}
 		trigger_error('Dwoo error : ' . $message, $level);
+
+        return null;
 	}
 }

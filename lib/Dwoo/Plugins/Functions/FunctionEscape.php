@@ -29,7 +29,6 @@ class FunctionEscape extends Plugin {
 		}
 
 		switch ($format) {
-
 			case 'html':
 				return htmlspecialchars((string)$value, ENT_QUOTES, $charset);
 			case 'htmlall':
@@ -63,5 +62,7 @@ class FunctionEscape extends Plugin {
 			default:
 				$this->core->triggerError('Escape\'s format argument must be one of : html, htmlall, url, urlpathinfo, hex, hexentity, javascript or mail, "' . $format . '" given.', E_USER_WARNING);
 		}
+
+        return null;
 	}
 }

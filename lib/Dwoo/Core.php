@@ -115,9 +115,9 @@ class Core {
 
 	/**
 	 * directory where the template files are stored
-	 * @var string
+	 * @var array
 	 */
-	protected $templateDir;
+	protected $templateDir = array();
 
 	/**
 	 * directory where the cached templates are stored
@@ -315,7 +315,7 @@ class Core {
 	 * @throws Exception
 	 * @throws \Exception
 	 * @throws Exception\CoreException
-	 * @return string nothing or the template output if $output is false
+	 * @return string|null or the template output if $output is false
 	 */
 	public function get($_tpl, $data = array(), $_compiler = null, $_output = false) {
 		// a render call came from within a template, so we need a new dwoo instance in order to avoid breaking this one
@@ -329,8 +329,9 @@ class Core {
 		if ($_tpl instanceof ITemplate) {
 			// valid, skip
 		}
-		elseif (is_string($this->templateDir . $_tpl) && file_exists($this->templateDir . $_tpl)) {
-			$_tpl = new File($this->templateDir . $_tpl);
+		elseif (is_string($_tpl)) {
+			$_tpl = new File($_tpl);
+			$_tpl->setIncludePath($this->templateDir);
 		}
 		else {
 			throw new CoreException('Dwoo->get/Dwoo->output\'s first argument must be a \Dwoo\ITemplate (i.e. \Dwoo\Template\File) or a valid path to a template file. Got: ' . $_tpl, E_USER_NOTICE);
@@ -458,6 +459,8 @@ class Core {
 				return $out;
 			}
 		}
+
+        return null;
 	}
 
 	/**
@@ -747,7 +750,6 @@ class Core {
 
 	/**
 	 * returns the compile directory with a trailing DIRECTORY_SEPARATOR
-	 *
 	 * @return string
 	 */
 	public function getCompileDir() {
@@ -755,9 +757,8 @@ class Core {
 	}
 
 	/**
-	 * returns the template directory with a trailing DIRECTORY_SEPARATOR
-	 *
-	 * @return string
+	 * returns an array of the template directory with a trailing DIRECTORY_SEPARATOR
+	 * @return array
 	 */
 	public function getTemplateDir() {
 		return $this->templateDir;
@@ -765,15 +766,17 @@ class Core {
 
 	/**
 	 * sets the template directory and automatically appends a DIRECTORY_SEPARATOR
-	 * @param $dir
+     * template directory is stored in an array
+	 * @param string $dir
 	 * @throws Exception\CoreException
 	 */
 	public function setTemplateDir($dir) {
 		try {
-			$this->templateDir = rtrim($dir, '/\\') . DIRECTORY_SEPARATOR;
-			if (is_dir($this->templateDir) === false) {
-				throw new CoreException('The template directory: "' . $this->templateDir . '" does not exists, create the directory or specify an other location !');
+			$tmpDir = rtrim($dir, '/\\') . DIRECTORY_SEPARATOR;
+			if (is_dir($tmpDir) === false) {
+				throw new CoreException('The template directory: "' . $tmpDir . '" does not exists, create the directory or specify an other location !');
 			}
+			$this->templateDir[] = $tmpDir;
 		}
 		catch(CoreException $e) {
 			throw $e;
@@ -937,12 +940,14 @@ class Core {
 
 	/**
 	 * [util function] fetches a template object of the given resource
-	 * @param string $resourceName the resource name (i.e. file, string)
-	 * @param string $resourceId   the resource identifier (i.e. file path)
-	 * @param int    $cacheTime    the cache time setting for this resource
-	 * @param string $cacheId      the unique cache identifier
-	 * @param string $compileId    the unique compiler identifier
+	 * @param string    $resourceName the resource name (i.e. file, string)
+	 * @param string    $resourceId   the resource identifier (i.e. file path)
+	 * @param int       $cacheTime    the cache time setting for this resource
+	 * @param string    $cacheId      the unique cache identifier
+	 * @param string    $compileId    the unique compiler identifier
 	 * @param ITemplate $parentTemplate
+	 * @throws \Exception
+	 * @throws \ReflectionException
 	 * @throws Exception\CoreException
 	 * @return ITemplate
 	 */
@@ -980,6 +985,8 @@ class Core {
 				return $this->count($value);
 			}
 		}
+
+        return false;
 	}
 
 	/**
@@ -1601,6 +1608,8 @@ class Core {
 				return false;
 			}
 		}
+
+        return false;
 	}
 
 	/**

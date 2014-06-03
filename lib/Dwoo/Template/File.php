@@ -155,6 +155,8 @@ class File extends String {
 				}
 			}
 		}
+
+        return null;
 	}
 
 	/**
