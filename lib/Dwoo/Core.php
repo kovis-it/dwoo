@@ -560,8 +560,9 @@ class Core {
 			else {
 				$this->plugins[$name] = array('type' => self::CLASS_PLUGIN | $compilable, 'callback' => $callback, 'class' => (is_object($callback[0]) ? get_class($callback[0]) : $callback[0]), 'function' => $callback[1]);
 			}
-		}
-		else if (class_exists($callback)) {
+		} elseif ($callback instanceof \Closure) {
+			$this->plugins[$name] = array('type' => self::FUNC_PLUGIN, 'callback' => $callback);
+		} else if (class_exists($callback)) {
 			if (is_subclass_of($callback, '\Dwoo\Block\Plugin')) {
 				$this->plugins[$name] = array('type' => self::BLOCK_PLUGIN | $compilable, 'callback' => $callback, 'class' => $callback);
 			}
@@ -1352,7 +1353,7 @@ class Core {
 				// Is a object
 				if (is_object($data)) {
 					// Check property exists
-					if (property_exists($data, $m[2][$k])) {
+					if (property_exists($data, $m[2][$k]) || method_exists($data, '__get')) {
 						$data = $data->$m[2][$k];
 					}
 					else {

@@ -1977,6 +1977,9 @@ class Compiler implements ICompiler {
 			$params                                 = self::implode_r($params);
 			$output                                 = '$' . $func . $this->templatePlugins[$func]['uuid'] . '(' . $params . ')';
 			$this->templatePlugins[$func]['called'] = true;
+		} elseif ($pluginType & Core::FUNC_PLUGIN) {
+			$params = self::implode_r($params);
+			$output = '$this->plugins["' . $func . '"]["callback"]('.$params.')';
 		}
 
 		if (is_array($parsingParams)) {
