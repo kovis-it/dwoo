@@ -1787,8 +1787,9 @@ class Compiler implements ICompiler {
 				}
 
 				$params = $this->mapParams($params, array(
-														 $this->customPlugins[$func]['class'],
-														 $this->customPlugins[$func]['function']
+														$this->customPlugins[$func]['class'],
+														$this->customPlugins[$func]['function'],
+														$this->customPlugins[$func]['callback']
 													), $state);
 			}
 			else {
@@ -3413,7 +3414,11 @@ class Compiler implements ICompiler {
 		}
 
 		if (is_array($callback)) {
-			$ref = new \ReflectionMethod(ucfirst($callback[0]), $callback[1]);
+			if (isset($callback[2]) && $callback[2][0] instanceof \kovisIt\kwork\core\wrapper\IWrapper) {
+				$ref = new \ReflectionMethod($callback[2][0]->wrapper_get_service(), $callback[1]);
+			} else {
+				$ref = new \ReflectionMethod(ucfirst($callback[0]), $callback[1]);
+			}
 		}
 		else {
 			$ref = new \ReflectionFunction($callback);
