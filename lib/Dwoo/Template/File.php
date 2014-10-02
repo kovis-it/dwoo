@@ -263,7 +263,8 @@ class File extends String {
 	protected function getCompiledFilename(Core $core) {
 		// no compile id was provided, set default
 		if ($this->compileId === null) {
-			$this->compileId = str_replace('../', '__', strtr($this->getResourceIdentifier(), '\\:', '/-'));
+			//$this->compileId = str_replace('../', '__', strtr($this->getResourceIdentifier(), '\\:', '/-'));
+			$this->compileId = '/'.$this->file;
 		}
 
 		return $core->getCompileDir() . $this->compileId . '.d' . Core::RELEASE_TAG . '.php';
